@@ -1,4 +1,4 @@
-# 🖥️ Noom
+# 🖥️ Joom
 
 ## ⚡ Technical Skills
 <div>
