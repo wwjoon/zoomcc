@@ -19,4 +19,13 @@ const handleListen = () => console.log(`Listening on http://localhost:${port}`);
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server  });
 
+wss.on('connection', (socket) => {
+    console.log('Connected to Client ✓');
+    socket.on('close', () => console.log('Disconnected to Client ❌'));
+    socket.on('message', (message) => {
+        console.log('New message: ', message.toString('Utf8'));
+    });
+    socket.send('Hello from the Server !');
+});
+
 server.listen(3000, handleListen);
