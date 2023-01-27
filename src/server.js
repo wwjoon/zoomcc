@@ -9,7 +9,7 @@ app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
 app.use('/public', express.static(__dirname + '/public'));
- 
+  
 app.get('/', (req, res) => res.render('home'));
 app.get('/*', (req, res) => res.redirect('/'));
 
@@ -19,13 +19,26 @@ const handleListen = () => console.log(`Listening on http://localhost:${port}`);
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server  });
 
+// fake database
+const sockets = [];
+
 wss.on('connection', (socket) => {
+    sockets.push(socket);
+    socket['nickname'] = 'anonymous'; // default
+
     console.log('Connected to Client ✓');
     socket.on('close', () => console.log('Disconnected to Client ❌'));
     socket.on('message', (message) => {
-        console.log('New message: ', message.toString('Utf8'));
+        const { type, payload } = JSON.parse(message.toString('Utf8'));
+        switch (type) {
+            case 'new_message':
+                sockets.forEach((aSocket) => aSocket.send(`${socket.nickname}: ${payload}`));
+                break;
+            case 'nickname':
+                socket['nickname'] = payload;
+                break;
+        }
     });
-    socket.send('Hello from the Server !');
 });
 
 server.listen(3000, handleListen);
