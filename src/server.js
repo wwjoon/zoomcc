@@ -1,6 +1,12 @@
-import WebSocket from 'ws';
 import http from 'http';
+import SocketIO from 'socket.io';
 import express from 'express';
+
+/*
+- Socket is Framework
+socket IO는 websocket 모듈에 비해 더 많은 기능을 간단하게 제공한다.
+websocket으로 연결되지 않으면 재연결을 시도하거나 다른 것을 이용해서 연결을 시도한다.
+ */
 
 const port = 3000;
 const app = express();
@@ -16,29 +22,16 @@ app.get('/*', (req, res) => res.redirect('/'));
 const handleListen = () => console.log(`Listening on http://localhost:${port}`);
 
 // http server 위에 websocket server를 만들기 위함, 동일한 포트에서 2가지 처리
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server  });
+const httpServer = http.createServer(app);
+const wsServer = SocketIO(httpServer);
 
-// fake database
-const sockets = [];
-
-wss.on('connection', (socket) => {
-    sockets.push(socket);
-    socket['nickname'] = 'anonymous'; // default
-
-    console.log('Connected to Client ✓');
-    socket.on('close', () => console.log('Disconnected to Client ❌'));
-    socket.on('message', (message) => {
-        const { type, payload } = JSON.parse(message.toString('Utf8'));
-        switch (type) {
-            case 'new_message':
-                sockets.forEach((aSocket) => aSocket.send(`${socket.nickname}: ${payload}`));
-                break;
-            case 'nickname':
-                socket['nickname'] = payload;
-                break;
-        }
+wsServer.on('connection', socket => {
+    socket.on('enter_room', (message, done) => {
+        console.log(message);
+        setTimeout(() => {
+            done();
+        }, 5000);
     });
 });
 
-server.listen(3000, handleListen);
+httpServer.listen(3000, handleListen);
