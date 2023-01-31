@@ -1,6 +1,6 @@
-import http from 'http';
-import SocketIO from 'socket.io';
-import express from 'express';
+import http from "http";
+import SocketIO from "socket.io";
+import express from "express";
 
 /*
 - Socket is Framework
@@ -11,13 +11,13 @@ websocket으로 연결되지 않으면 재연결을 시도하거나 다른 것�
 const port = 3000;
 const app = express();
 
-app.set('view engine', 'pug');
-app.set('views', __dirname + '/views');
+app.set("view engine", "pug");
+app.set("views", __dirname + "/views");
 
-app.use('/public', express.static(__dirname + '/public'));
-  
-app.get('/', (req, res) => res.render('home'));
-app.get('/*', (req, res) => res.redirect('/'));
+app.use("/public", express.static(__dirname + "/public"));
+
+app.get("/", (req, res) => res.render("home"));
+app.get("/*", (req, res) => res.redirect("/"));
 
 const handleListen = () => console.log(`Listening on http://localhost:${port}`);
 
@@ -25,13 +25,10 @@ const handleListen = () => console.log(`Listening on http://localhost:${port}`);
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer);
 
-wsServer.on('connection', socket => {
-    socket.on('enter_room', (message, done) => {
-        console.log(message);
-        setTimeout(() => {
-            done();
-        }, 5000);
-    });
+wsServer.on("connection", (socket) => {
+  socket.on("enter_room", (message) => {
+    console.log(message);
+  });
 });
 
 httpServer.listen(3000, handleListen);
