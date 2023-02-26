@@ -59,3 +59,20 @@ socket.on("welcome", (user) => addMessage(`${user} joined!`));
 socket.on("bye", (user) => addMessage(`${user} left :(`));
 
 socket.on("new_message", addMessage);
+
+socket.on("room_change", (rooms) => {
+  const roomList = welcome.querySelector("ul");
+  roomList.innerHTML = ""; // init
+
+  // 열려있는 퍼블릭 룸이 없다면 Return
+  if (rooms.length === 0) {
+    return;
+  }
+
+  // 열려있는 퍼블릭 룸 Append
+  rooms.forEach((room) => {
+    const li = document.createElement("li");
+    li.innerText = room;
+    roomList.append(li);
+  });
+});
