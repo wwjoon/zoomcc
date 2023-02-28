@@ -15,6 +15,11 @@ const addMessage = (message) => {
   ul.appendChild(li);
 };
 
+const refreshTitle = (title) => {
+  const h3 = room.querySelector("h3");
+  h3.innerText = title;
+};
+
 const handleMessageSubmit = (event) => {
   event.preventDefault();
   const input = room.querySelector("#message input");
@@ -36,8 +41,7 @@ const handleNicknameSubmit = (event) => {
 const showRoom = () => {
   welcome.hidden = true;
   room.hidden = false;
-  const h3 = room.querySelector("h3");
-  h3.innerText = `Room ${roomName}`;
+  refreshTitle(`Room ${roomName}`);
   const messageForm = room.querySelector("#message");
   const nicknameForm = room.querySelector("#nickname");
   messageForm.addEventListener("submit", handleMessageSubmit);
@@ -54,9 +58,15 @@ const handleRoomSubmit = (event) => {
 
 form.addEventListener("submit", handleRoomSubmit);
 
-socket.on("welcome", (user) => addMessage(`${user} joined!`));
+socket.on("welcome", (user, newCount) => {
+  refreshTitle(`Room ${roomName} (${newCount})`);
+  addMessage(`${user} joined!`);
+});
 
-socket.on("bye", (user) => addMessage(`${user} left :(`));
+socket.on("bye", (user, newCount) => {
+  refreshTitle(`Room ${roomName} (${newCount})`);
+  addMessage(`${user} left :(`);
+});
 
 socket.on("new_message", addMessage);
 
