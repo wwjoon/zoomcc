@@ -17,10 +17,11 @@ app.set("views", __dirname + "/views");
 
 app.use("/public", express.static(__dirname + "/public"));
 
-app.get("/", (req, res) => res.render("home"));
+app.get("/", (req, res) => res.render("chat"));
 app.get("/*", (req, res) => res.redirect("/"));
 
-const handleListen = () => console.log(`Listening on http://localhost:${port}`);
+const handleListen = () =>
+  console.log(`💌 Listening on http://localhost:${port}`);
 
 // http server 위에 websocket server를 만들기 위함, 동일한 포트에서 2가지 처리
 const httpServer = http.createServer(app);
@@ -88,4 +89,4 @@ wsServer.on("connection", (socket) => {
   socket.on("nickname", (nickname) => (socket["nickname"] = nickname));
 });
 
-httpServer.listen(3000, handleListen);
+httpServer.listen(port, handleListen);
