@@ -1,3 +1,4 @@
+/* variable */
 const socket = io();
 
 const face = document.getElementById("face");
@@ -37,8 +38,6 @@ const getMedia = async () => {
   }
 };
 
-getMedia();
-
 const handleMuteClick = () => {
   stream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
   if (!muted) {
@@ -63,3 +62,5 @@ const handleCameraClick = () => {
 
 muteBtn.addEventListener("click", handleMuteClick);
 cameraBtn.addEventListener("click", handleCameraClick);
+
+getMedia();
